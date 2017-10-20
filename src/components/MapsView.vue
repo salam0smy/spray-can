@@ -61,7 +61,10 @@ export default {
   mounted () {
     if (navigator.geolocation) {
       // geolocation is available
-      navigator.geolocation.watchPosition(this.updateLocation)
+      var options = {
+        enableHighAccuracy: true
+      }
+      navigator.geolocation.watchPosition(this.updateLocation, this.errorHandler, options)
     } else {
       // geolocation is not supported
     }
@@ -69,6 +72,9 @@ export default {
   methods: {
     getWindowSize () {
       return document.documentElement.clientHeight
+    },
+    errorHandler (error) {
+      console.error(error);
     },
     updateLocation (position) {
         /*

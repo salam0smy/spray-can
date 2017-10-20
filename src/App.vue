@@ -48,7 +48,7 @@ body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  color: #1565C0;
 }
 
 main {
@@ -65,7 +65,7 @@ header {
   margin: 0;
   height: 56px;
   padding: 0 16px 0 24px;
-  background-color: #35495E;
+  background-color: #0D47A1;
   color: #ffffff;
 }
 
