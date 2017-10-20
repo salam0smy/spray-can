@@ -62,7 +62,9 @@ export default {
     if (navigator.geolocation) {
       // geolocation is available
       var options = {
-        enableHighAccuracy: true
+        enableHighAccuracy: true,
+        maximumAge: 30000,
+        timeout: 27000
       }
       navigator.geolocation.watchPosition(this.updateLocation, this.errorHandler, options)
     } else {
