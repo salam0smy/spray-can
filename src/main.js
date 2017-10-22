@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import Vuefire from 'vuefire'
+import firebaseui from 'firebaseui';
 import firebase from './services/firebase'
 import VueResource from 'vue-resource'
 import * as VueGoogleMaps from 'vue2-google-maps'
