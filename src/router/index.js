@@ -16,7 +16,7 @@ export default new Router({
       component: MapsView,
     },
     {
-      path: 'addMemory',
+      path: '/addMemory',
       name: 'AddMemory',
       component: AddMemory
     },
