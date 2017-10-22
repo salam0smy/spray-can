@@ -1,35 +1,17 @@
 <template>
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-
-      <div class="mdl-layout__header-row">
-        <div class="mdl-layout__drawer-button" @click="goBack">
-          <i class="material-icons">arrow_back</i>
-        </div>
-        <span class="mdl-layout-title">Add Memory</span>
-        <div class="mdl-layout-spacer"></div>
-      </div>
-    </header>
-    <main class="mdl-layout__content">
-      <div class="page-content">
-          <form action="#">
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-              <input class="mdl-textfield__input" v-model="title" type="text" id="title">
-              <label class="mdl-textfield__label" for="sample3">Title...</label>
-            </div>
-            <div class="mdl-textfield mdl-js-textfield">
-              <textarea class="mdl-textfield__input" v-model="memory" type="text" rows="3" id="desc"></textarea>
-              <label class="mdl-textfield__label" for="sample5">Story...</label>
-            </div>
-            <div class="actions">
-              <a @click.prevent="postMemory" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-                <span>Post Memory</span>
-              </a>
-            </div>
-          </form>
-      </div>
-    </main>
-  </div>
+  <v-container fluid>
+    <v-layout row wrap>
+      <v-flex xs12>
+        <v-text-field name="title" label="Title" v-model="title" id="title"></v-text-field>
+      </v-flex>
+      <v-flex xs12>
+        <v-text-field name="memory" label="Memory" v-model="memory" id="memory" multi-line></v-text-field>
+      </v-flex>
+      <v-flex xs12>
+        <v-btn color="primary" @click.prevent="postMemory">Submit</v-btn>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -48,7 +30,7 @@ export default {
     }
   },
   methods: {
-    goBack(){
+    goBack() {
       this.$router.push('/')
     },
     postToUserList(memoryId) {
@@ -96,11 +78,11 @@ export default {
           var geofirePromise = this.setGeofireKey(res.key, memory.position.lat, memory.position.lng)
           var memoriesListPromise = this.postToUserList(res.key)
           Promise.all([geofirePromise, memoriesListPromise]).then(() => {
-            this.$router.push('/')
+            console.log('successfully added memory')
           }, (error) => {
             console.log("Error: " + error);
           })
-
+          this.$router.push('/')
         })
       })
     }

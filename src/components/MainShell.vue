@@ -1,50 +1,90 @@
 <template>
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-    <header class="mdl-layout__header">
-
-      <div class="mdl-layout__header-row">
-        <span class="mdl-layout-title">Noteh</span>
-        <div class="mdl-layout-spacer"></div>
-        <div>
-          <router-link class="" to="/addMemory" v-if="isLoggedIn">
-            <button class="mdl-layout-icon mdl-button mdl-js-button mdl-button--icon">
-              <i class="material-icons">add</i>
-            </button>
-          </router-link>
-          <router-link class="mdl-js-ripple-effect" to="/auth" v-if="!isLoggedIn">
-            <i class="">signin</i>
-          </router-link>
-        </div>
-      </div>
-    </header>
-    <div class="mdl-layout__drawer">
-      <span class="mdl-layout-title">Noteh</span>
-      <nav class="mdl-navigation">
-        <router-link class="mdl-navigation__link" to="/" @click.native="hideMenu">Home</router-link>
-        <a v-if="isLoggedIn" class="mdl-navigation__link" @click="logout" @click.native="hideMenu">Logout</a>
-      </nav>
-    </div>
-    <main class="mdl-layout__content">
-      <div class="page-content">
-        <router-view></router-view>
-      </div>
+  <v-app>
+    <v-navigation-drawer temporary v-model="drawer" light absolute>
+      <v-toolbar flat>
+        <v-list>
+          <v-list-tile>
+            <v-list-tile-title class="title">
+              Spray Can
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-toolbar>
+      <v-divider></v-divider>
+      <v-list dense class="pt-0">
+        <v-list-tile v-for="item in items" :key="item.title" @click="item.onclick">
+          <v-list-tile-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </v-navigation-drawer>
+    <v-toolbar app dark color="primary">
+      <v-toolbar-side-icon v-show="!showBackArrow" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-btn v-show="showBackArrow" icon @click="goBack">
+        <v-icon>arrow_back</v-icon>
+      </v-btn>
+      <v-toolbar-title class="white--text">Spray Can</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon @click="goToAddMemory" v-show="!showBackArrow && isLoggedIn">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-btn @click="login" v-show="!isLoggedIn && !showBackArrow" flat dark>
+        Login
+      </v-btn>
+    </v-toolbar>
+    <main>
+      <v-content>
+        <v-container fluid class="content-container">
+          <router-view></router-view>
+        </v-container>
+      </v-content>
     </main>
-  </div>
+  </v-app>
 </template>
 
 <script>
-require('material-design-lite')
+import Vue from 'Vue'
+import firebase from 'firebase'
 export default {
   name: 'main-app',
+  computed: {
+    showBackArrow() {
+      return this.$route.path !== '/'
+    }
+  },
   data() {
     return {
-      isLoggedIn: false
+      //showBackArrow: false,
+      isLoggedIn: false,
+      drawer: false,
+      items: [
+        { title: 'Home', icon: 'home', onclick: this.goHome },
+        { title: 'Logout', icon: 'sign-out', onclick: this.logout }
+      ],
+      right: null
+    }
+  },
+  watch: {
+    '$route'(to, from) {
+      console.log('watch', to.path)
+      //this.showBackArrow = to.path !== '/'
+      //Vue.set(this.options, 'showBackArrow', showBackArrow)
     }
   },
   methods: {
-    hideMenu: function() {
-      document.getElementsByClassName('mdl-layout__drawer')[0].classList.remove('is-visible')
-      document.getElementsByClassName('mdl-layout__obfuscator')[0].classList.remove('is-visible')
+    goBack() {
+      this.$router.back()
+    },
+    goHome() {
+      this.$router.push('/')
+      this.drawer = false
+    },
+    login(){
+      this.$router.push('/auth')
     },
     logout() {
       firebase.auth().signOut().then(() => {
@@ -53,7 +93,13 @@ export default {
       }, (error) => {
         console.error('Sign Out Error', error);
       });
-      this.hideMenu()
+      this.drawer = false
+    },
+    onItemClick(item) {
+      console.log(item)
+    },
+    goToAddMemory() {
+      this.$router.push('/addMemory')
     }
   },
   mounted() {
@@ -87,6 +133,8 @@ main {
   text-align: center;
   /* margin-top: 40px; */
   height: 100%;
+  position: relative;
+  overflow-y: auto;
 }
 
 .page-content {
@@ -110,6 +158,10 @@ header span {
   font-weight: 400;
   box-sizing: border-box;
   padding-top: 16px;
+}
+
+.content-container {
+  padding: 0px;
 }
 </style>
 

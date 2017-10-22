@@ -1,12 +1,13 @@
 <template>
-    <div id="firebaseui-auth-container"></div>
+  <div id="firebaseui-auth-container">
+  </div>
 </template>
 
 <script>
 import firebase from 'firebase'
-window.firebase = firebase
 import firebaseui from 'firebaseui'
-import {config} from '../services/firebase'
+import { config } from '../services/firebase'
+var ui;
 export default {
   name: 'auth',
   mounted() {
@@ -16,10 +17,19 @@ export default {
       signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         firebase.auth.EmailAuthProvider.PROVIDER_ID
-        ]
-      };
-    var ui = new firebaseui.auth.AuthUI(firebase.auth());
-    ui.start('#firebaseui-auth-container', uiConfig);
+      ]
+    };
+    console.log(firebaseui.auth);
+    ui = firebaseui.auth.AuthUI.getInstance()
+    if (ui) {
+      ui.reset()
+      ui.start('#firebaseui-auth-container', uiConfig)
     }
+    else {
+      ui = new firebaseui.auth.AuthUI(firebase.auth());
+      ui.start('#firebaseui-auth-container', uiConfig);
+    }
+
+  }
 }
 </script>

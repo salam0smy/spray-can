@@ -48,7 +48,7 @@
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons');
 @import url('https://code.getmdl.io/1.2.1/material.blue-red.min.css');
 @import url('../node_modules/firebaseui/dist/firebaseui.css');
 @import url('../node_modules/vuetify/dist/vuetify.min.css');

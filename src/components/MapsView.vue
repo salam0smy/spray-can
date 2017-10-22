@@ -1,26 +1,45 @@
 <template>
-  <div style="height: 100%;">
+  <div style="height: 100%; position:absolute; width: 100%;">
     <gmap-map :zoom-control="false" :options="options" :center="center" :zoom="15" style="width: 100%; height: 85%; position: fixed;">
       <gmap-marker :key="index" v-for="(m, index) in markers" :position="m.position" :icon="m.icon" :clickable="true" @click="center=m.position"></gmap-marker>
     </gmap-map>
-    <div class="mdl-grid results-view">
-      <memory-card-item v-for="(memory, index) in memoriesMap" :key="index" :index="index" :memory="memory"></memory-card-item>
-      <div v-if="!isResultsFound">
-        <div class="no-memory-card mdl-card mdl-shadow--4dp">
-          <div class="mdl-card__title">
-            <h2 class="mdl-card__title-text">No memories around :(</h2>
-          </div>
-          <div class="mdl-card__supporting-text">
-            Why don't you leve a memory here
-          </div>
-          <div class="mdl-card__menu">
-            <!-- <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                <i class="material-icons mdl-js-ripple-effect">share</i>
-              </button> -->
-          </div>
-        </div>
-      </div>
+
+    <div class="results-view">
+      <v-container fluid style="min-height: 0;" grid-list-lg>
+        <v-layout row wrap>
+          <v-flex xs12 v-show="!isLoggedIn">
+            <v-card color="pink darken-1" class="white--text">
+              <v-container fluid grid-list-lg>
+                <v-layout row>
+                  <v-flex xs12>
+                    <div>
+                      <div class="headline">Login in and leave your memories</div>
+                      <div>Use Spray Can to leave your mark in the street</div>
+                    </div>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-card>
+          </v-flex>
+          <v-flex xs12>
+            <v-card color="pink darken-1" class="white--text" v-show="!isResultsFound">
+              <v-container fluid grid-list-lg>
+                <v-layout row>
+                  <v-flex xs12>
+                    <div>
+                      <div class="headline">No memories found!</div>
+                      <div>Keep exploring to find memories</div>
+                    </div>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-card>
+          </v-flex>
+          <memory-card-item v-for="(memory, index) in memoriesMap" :key="index" :index="index" :memory="memory"></memory-card-item>
+        </v-layout>
+      </v-container>
     </div>
+
     <!-- No results -->
   </div>
 </template>
@@ -30,24 +49,16 @@
 // New in 0.4.0
 import * as VueGoogleMaps from 'vue2-google-maps';
 import Vue from 'vue'
-import firebase from '../services/firebase'
+import firebaseDb from '../services/firebase'
 import GeoFire from 'geofire'
 import MemoryCardItem from './MemoryCardItem'
 var turtleIcon = '/static/img/icons/turtleIcon.png'
 var noteIcon = '/static/img/icons/noteIcon.png'
+import firebase from 'firebase'
 
-const locationsRef = firebase.database.ref('/locations')
-const memoriesRef = firebase.database.ref('/memories')
+const locationsRef = firebaseDb.database.ref('/locations')
+const memoriesRef = firebaseDb.database.ref('/memories')
 var geoFire = new GeoFire(locationsRef)
-
-// Vue.use(VueGoogleMaps, {
-//   load: {
-//     key: 'YOUR_API_TOKEN',
-//     v: 'OPTIONAL VERSION NUMBER',
-//     // libraries: 'places', //// If you need to use place input
-//   }
-// });
-console.log(VueGoogleMaps)
 
 export default {
   components: { 'MemoryCardItem': MemoryCardItem },
@@ -63,6 +74,7 @@ export default {
   },
   data() {
     return {
+      isLoggedIn: false,
       geoQuery: null,
       center: { lat: 10.0, lng: 10.0 },
       markers: [{
@@ -88,6 +100,9 @@ export default {
     }
   },
   mounted() {
+    firebase.auth().onAuthStateChanged((user) => {
+      this.isLoggedIn = user !== null
+    })
     if (navigator.geolocation) {
       // geolocation is available
       var options = {
@@ -108,7 +123,7 @@ export default {
       memoriesRef.child(key).once('value').then((snapshot) => {
         //this.memoriesMap[key] = snapshot.val()
         Vue.set(this.memoriesMap, key, snapshot.val())
-        console.log('added', this.memoriesMap)
+        //console.log('added', this.memoriesMap)
       })
     },
     onCardMemoryClick(clickEvent) {
@@ -190,9 +205,10 @@ export default {
 
 <!-- Wide card with share menu button -->
 <style>
-.no-memory-card{
+.no-memory-card {
   min-height: 100px;
 }
+
 .demo-card-wide.mdl-card {
   width: 512px;
   margin: 5px;

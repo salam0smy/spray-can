@@ -6,12 +6,14 @@ import router from './router'
 import Vuefire from 'vuefire'
 import firebaseui from 'firebaseui';
 import firebase from './services/firebase'
+import Vuetify from 'vuetify'
 import VueResource from 'vue-resource'
 import * as VueGoogleMaps from 'vue2-google-maps'
 
 Vue.config.productionTip = false
 Vue.use(Vuefire)
 Vue.use(VueResource)
+Vue.use(Vuetify)
 Vue.use(VueGoogleMaps, {
   load: {
     key: 'AIzaSyDAuZAVjGB_FnPLAV4okFDYODjeNw3cuFk'

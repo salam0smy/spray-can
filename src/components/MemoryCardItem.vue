@@ -1,23 +1,35 @@
 <template>
-  <div class="memory-card-wide mdl-card mdl-shadow--4dp">
-    <div class="mdl-card__title" :id="index">
-      <h2 class="mdl-card__title-text">{{memory.title}}</h2>
-    </div>
-    <div class="mdl-card__supporting-text">
-      {{memory.memory}}
-    </div>
-    <div class="mdl-card__menu">
-      <!-- <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-              <i class="material-icons mdl-js-ripple-effect">share</i>
-            </button> -->
-    </div>
-  </div>
+  <v-flex xs12>
+    <v-card :color="getRandomColour()" class="white--text">
+      <v-container fluid grid-list-lg>
+        <v-layout row>
+          <v-flex xs12>
+            <div>
+              <div class="headline">{{memory.title}}</div>
+              <div>{{memory.memory}}</div>
+            </div>
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <!-- <v-card-title primary-title>
+        <div class="headline">{{memory.title}}</div>
+        <span>{{memory.memory}}</span>
+      </v-card-title> -->
+    </v-card>
+  </v-flex>
 </template>
 
 <script>
 export default {
   name: 'memory-card-item',
-  props: ['memory', 'index']
+  props: ['memory', 'index'],
+  methods: {
+    getRandomColour(){
+      var colours = ['blue darken-2', 'cyan darken-2', 'green darken-2', 'amber darken-2', 'blue-grey darken-2']
+      var randIndex = Math.floor(Math.random() * colours.length);
+      return colours[randIndex]
+    }
+  }
 }
 </script>
 
@@ -27,6 +39,7 @@ export default {
   margin: 5px;
   min-height: 100px;
 }
+
 .demo-card-wide>.mdl-card__menu {
   color: #fff;
 }

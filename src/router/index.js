@@ -18,18 +18,18 @@ export default new Router({
         {
           path: '',
           component: MapsView
+        },
+        {
+          path: 'addMemory',
+          name: 'AddMemory',
+          component: AddMemory
+        },
+        {
+          path: '/auth',
+          name: 'auth',
+          component: Auth
         }
       ]
-    },
-    {
-      path: '/addMemory',
-      name: 'AddMemory',
-      component: AddMemory
-    },
-    {
-      path: '/auth',
-      name: 'auth',
-      component: Auth
     }
   ]
 })
