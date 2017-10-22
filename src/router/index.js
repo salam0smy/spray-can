@@ -13,23 +13,17 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: MainShell,
-      children: [
-        {
-          path: '',
-          component: MapsView
-        },
-        {
-          path: 'addMemory',
-          name: 'AddMemory',
-          component: AddMemory
-        },
-        {
-          path: '/auth',
-          name: 'auth',
-          component: Auth
-        }
-      ]
+      component: MapsView,
+    },
+    {
+      path: 'addMemory',
+      name: 'AddMemory',
+      component: AddMemory
+    },
+    {
+      path: '/auth',
+      name: 'auth',
+      component: Auth
     }
   ]
 })
