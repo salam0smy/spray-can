@@ -75,6 +75,7 @@ export default {
   data() {
     return {
       isLoggedIn: false,
+      radius: 0.609, //kilometers
       geoQuery: null,
       center: { lat: 10.0, lng: 10.0 },
       markers: [{
@@ -135,62 +136,51 @@ export default {
     updateGeoquery(position) {
       this.geoQuery.updateCriteria({
         center: [position.coords.latitude, position.coords.longitude],
-        radius: 0.609 //kilometers
+        radius: this.radius //kilometers
       })
+    },
+    onGeoQueryKeyEntered(key, location, distance) {
+      console.log("Memory " + key + " found at " + location + " (" + distance + " km away)");
+      if (!(key in this.memoriesMap)) {
+        this.updateMemoryForKey(key)
+        var position = {
+          lat: location[0],
+          lng: location[1]
+        }
+        Vue.set(this.markers, this.markers.length, {
+          position: position,
+          icon: noteIcon,
+          _key: key
+        })
+      }
+    },
+    onGeoQueryKeyExited(key, location, distance) {
+      if (key in this.memoriesMap) {
+        Vue.delete(this.memoriesMap, key)
+      }
+      console.log(key + " exited query to " + location + " (" + distance + " km from center)");
     },
     setupGeoquery(position) {
       this.geoQuery = geoFire.query({
         center: [position.coords.latitude, position.coords.longitude],
-        radius: 0.609 //kilometers
+        radius: this.radius //kilometers
       });
 
-      this.geoQuery.on("key_entered", (key, location, distance) => {
-        console.log("Memory " + key + " found at " + location + " (" + distance + " km away)");
-        if (!(key in this.memoriesMap)) {
-          this.updateMemoryForKey(key)
-          var position = {
-            lat: location[0],
-            lng: location[1]
-          }
-          Vue.set(this.markers, this.markers.length, {
-            position: position,
-            icon: noteIcon,
-            _key: key
-          })
-        }
-      });
-
-      this.geoQuery.on("key_exited", (key, location, distance) => {
-        if (key in this.memoriesMap) {
-          // do nothing
-          Vue.delete(this.memoriesMap, key)
-        }
-        console.log(key + " exited query to " + location + " (" + distance + " km from center)");
-      });
+      this.geoQuery.on("key_entered", this.onGeoQueryKeyEntered);
+      this.geoQuery.on("key_exited", this.onGeoQueryKeyExited);
+    },
+    updateUserMarker(coords) {
+      this.markers[0].position.lat = coords.latitude
+      this.markers[0].position.lng = coords.longitude
+    },
+    updateCenter(coords) {
+      this.center.lat = coords.latitude
+      this.center.lng = coords.longitude
     },
     updateLocation(position) {
-      /*
-      position is an object containing various information about
-      the acquired device location:
-  
-      position = {
-          coords: {
-              latitude - Geographical latitude in decimal degrees.
-              longitude - Geographical longitude in decimal degrees.
-              altitude - Height in meters relative to sea level.
-              accuracy - Possible error margin for the coordinates in meters.
-              altitudeAccuracy - Possible error margin for the altitude in meters.
-              heading - The direction of the device in degrees relative to north.
-              speed - The velocity of the device in meters per second.
-          }
-          timestamp - The time at which the location was retrieved.
-      }
-      */
-      this.center.lat = position.coords.latitude
-      this.center.lng = position.coords.longitude
-      console.log('position', position)
-      this.markers[0].position.lat = position.coords.latitude
-      this.markers[0].position.lng = position.coords.longitude
+      // TODO: only update center when panning is on
+      this.updateCenter(position.coords)
+      this.updateUserMarker(position.coords)
       if (this.geoQuery === null) {
         this.setupGeoquery(position)
       }
