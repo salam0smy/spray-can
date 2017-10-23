@@ -5,6 +5,7 @@ import MapsView from '@/components/MapsView'
 import AddMemory from '@/components/AddMemory'
 import Auth from '@/components/Auth'
 import MainShell from '@/components/MainShell'
+import MemoriesList from '@/components/MemoriesList'
 
 Vue.use(Router)
 
@@ -12,18 +13,23 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Speay Can',
       component: MapsView,
     },
     {
       path: '/addMemory',
-      name: 'AddMemory',
+      name: 'Add Memory',
       component: AddMemory
     },
     {
       path: '/auth',
-      name: 'auth',
+      name: 'Login',
       component: Auth
+    },
+    {
+      path: '/memories',
+      name: 'Memories',
+      component: MemoriesList
     }
   ]
 })

@@ -1,10 +1,10 @@
 <template>
-  <div style="height: 100%; position:absolute; width: 100%;">
+  <div style="height: 100%; position:absolute; width: 100%;overflow-y: auto;">
     <gmap-map :zoom-control="false" :options="options" :center="center" :zoom="15" style="width: 100%; height: 85%; position: fixed;">
       <gmap-marker :key="index" v-for="(m, index) in markers" :position="m.position" :icon="m.icon" :clickable="true" @click="center=m.position"></gmap-marker>
     </gmap-map>
 
-    <div class="results-view">
+    <div class="results-view secondary">
       <v-container fluid style="min-height: 0;" grid-list-lg>
         <v-layout row wrap>
           <v-flex xs12 v-show="!isLoggedIn">
@@ -13,7 +13,7 @@
                 <v-layout row>
                   <v-flex xs12>
                     <div>
-                      <div class="headline">Login in and leave your memories</div>
+                      <div class="headline">Login and leave your memories</div>
                       <div>Use Spray Can to leave your mark in the street</div>
                     </div>
                   </v-flex>

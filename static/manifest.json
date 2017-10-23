@@ -1,6 +1,6 @@
 {
-  "name": "Memories",
-  "short_name": "Memories",
+  "name": "Spray Can",
+  "short_name": "Spray Can",
   "icons": [
     {
       "src": "/static/img/icons/android-chrome-192x192.png",
@@ -16,6 +16,6 @@
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "##0D47A1",
-  "theme_color": "##0D47A1"
+  "background_color": "#484848",
+  "theme_color": "#000000"
 }
