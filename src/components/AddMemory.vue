@@ -8,7 +8,7 @@
         <v-text-field name="memory" label="Memory" v-model="memory" id="memory" multi-line></v-text-field>
       </v-flex>
       <v-flex xs12>
-        <v-btn color="primary" @click.prevent="postMemory">Submit</v-btn>
+        <v-btn color="primary" @click.prevent="postMemory" :disabled="loading">Submit</v-btn>
       </v-flex>
     </v-layout>
   </v-container>
@@ -26,7 +26,8 @@ export default {
   data() {
     return {
       'title': '',
-      'memory': ''
+      'memory': '',
+      'loading': false
     }
   },
   methods: {
@@ -39,11 +40,13 @@ export default {
         memoriesListRef.child(userUid).child(memoryId).set(true).then((res) => {
           console.log('saved to user')
           resolve()
-        }, reject)
+        }, (error)=>{
+          reject('Fail to save to user list')
+        })
       })
     },
     getMemoryObject() {
-      var promise = new Promise((resolse, reject) => {
+      return new Promise((resolse, reject) => {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition((position) => {
             var memory = {
@@ -55,24 +58,23 @@ export default {
               'memory': this.memory,
               'createdAt': firebase.database.ServerValue.TIMESTAMP
             }
-            resolse(memory)
+            resolve(memory)
           }, reject)
         } else {
           reject('Location not avaliable')
         }
       })
-      return promise
     },
     setGeofireKey(key, lat, lng) {
-      var promise = new Promise((resolve, reject) => {
+      return new Promise((resolve, reject) => {
         geoFire.set(key, [lat, lng]).then(() => {
           console.log("Provided key has been added to GeoFire");
           resolve()
         }, reject)
       })
-      return promise
     },
     postMemory() {
+      this.loading = true
       this.getMemoryObject().then((memory) => {
         memoriesRef.push(memory).then((res) => {
           var geofirePromise = this.setGeofireKey(res.key, memory.position.lat, memory.position.lng)
@@ -82,6 +84,7 @@ export default {
           }, (error) => {
             console.log("Error: " + error);
           })
+          this.loading = false
           this.$router.push('/')
         })
       })
